@@ -2,109 +2,125 @@
 Docstring for algo
 """
 
-def transform_graph(graph: dict) -> list[tuple[str, str, int]]:
+def kruskal_algorithm(graph: dict[str, dict[str, int]]) -> dict[str, dict[str, int]]:
 
     """
-    Docstring for transform
+    Docstring for kruskal_algorithm
+
+    g = {
+    'A': {'B': 4, 'C': 2, 'F': 3},
+    'B': {'A': 4, 'C': 5, 'D': 10, 'E': 1},
+    'C': {'A': 2, 'B': 5, 'D': 3},
+    'D': {'B': 10, 'C': 3, 'G': 6},
+    'E': {'B': 1, 'F': 5},
+    'F': {'A': 3, 'E': 5, 'G': 2},
+    'G': {'D': 6, 'F': 2},
+    }
 
     :param graph: Description
-    :type graph: dict
+    :type graph: dict[str, dict[str, int]]
     :return: Description
-    :rtype: list[tuple]
-
-    graph = {
-    'A': {'B': 4, 'C': 2},
-    'B': {'A': 4, 'C': 5, 'D': 10},
-    'C': {'A': 2, 'B': 5, 'D': 3},
-    'D': {'B': 10, 'C': 3}
-    }
+    :rtype: dict[str, dict[str, int]]
     """
 
     edges = []
     visited = set()
-
-    for u, sub in graph.items():
-        for v, w in sub.items():
+    for u in graph: # transform edges into ('A', 'B', d)
+        for v, w in graph[u].items():
             if (v, u) not in visited:
                 edges.append((u, v, w))
                 visited.add((u, v))
 
-    return edges
+    f = [{node} for node in graph] # for iteration
+    tree = {node: {} for node in graph} # result
 
+    for u, v, w in sorted(edges, key = lambda x: x[2]):
+        # Find which sets u and v belong to
+        u_iter = next(s for s in f if u in s)
+        v_iter = next(s for s in f if v in s)
 
-def kruskal_algorithm(graph: dict) -> dict:
+        if u_iter != v_iter: # difference check
+            tree[u][v] = w
+            tree[v][u] = w
 
-    """
-    Docstring for kruskal_algo
+            u_iter.update(v_iter)
+            f.remove(v_iter)
 
-    :param graph: Description
-    :type graph: dict
-    :return: Description
-    :rtype: dict
+        if len(f) == 1: # loop end at n-1 iteration
+            break
 
-    graph = {
-    'A': {'B': 4, 'C': 2},
-    'B': {'A': 4, 'C': 5, 'D': 10},
-    'C': {'A': 2, 'B': 5, 'D': 3},
-    'D': {'B': 10, 'C': 3}
-    }
-    """
+    return tree
 
-    # tree = {}
-    # temp = transform_graph(graph)
-    # l = len(graph)
+    # edges = []
+    # visited = set()
 
-    # while len(tree) != l:
-    #     if not temp:
-    #         break
+    # for u, sub in graph.items():
+    #     for v, w in sub.items():
+    #         if (v, u) not in visited:
+    #             edges.append((u, v, w))
+    #             visited.add((u, v))
 
-    #     m = min(temp, key = lambda x: x[2])
+    # x = sorted(edges, key = lambda x: x[2])
+    # lenght = len(graph)
+    # visited = set()
+    # tree = {v: {} for v in graph}
 
-    #     if m[0] not in tree and m[1] not in tree:
-    #         tree[m[0]] = {m[1]: m[2]}
+    # while len(visited) < lenght:
 
-    #     temp.remove(m)
+    #     v, u, w = next(iter(x))
+    #     if not {v, u} <= visited:
+    #         visited.update({v, u})
+    #         tree[v][u] = w
+    #         tree[u][v] = w
+    #     x.remove((v, u, w))
 
     # return tree
 
-    return graph
 
 
-def prim_algorithm(graph: dict, start: str = None) -> dict:
+def prim_algorithm(graph: dict[str, dict[str, int]], start = None) -> dict[str, dict[str, int]]:
 
     """
     Docstring for prim_algorithm
 
-    graph = {
-    'A': {'B': 4, 'C': 2},
-    'B': {'A': 4, 'C': 5, 'D': 10},
-    'C': {'A': 2, 'B': 5, 'D': 3},
-    'D': {'B': 10, 'C': 3}
-    }
-
     :param graph: Description
-    :type graph: dict
+    :type graph: dict[str, dict[str, int]]
+    :param start: Description
     :return: Description
-    :rtype: dict
+    :rtype: dict[str, dict[str, int]]
     """
 
-    if start is None:
+    if start is None: # in case of no user-input
         start = min(graph.keys())
 
+    lenght = len(graph) # no need to call len() every time
     visited = {start}
-    tree = {v: {} for v in graph}
+    tree = {v: {} for v in graph} # placeholder
 
-    while len(visited) < len(graph):
+    while len(visited) < lenght: # stop condition
 
+        # iteration over edges for min-weight
         u, v, w = min((u, v, w) for u in visited for v, w in graph[u].items() if v not in visited)
 
+        # save result
         tree[u][v] = w
         tree[v][u] = w
         visited.add(v)
 
     return tree
 
-
+g_10 = {
+    'A': {'B': 4, 'C': 2, 'F': 3},
+    'B': {'A': 4, 'C': 5, 'D': 10, 'E': 1},
+    'C': {'A': 2, 'B': 5, 'D': 3, 'J': 4},
+    'D': {'B': 10, 'C': 3, 'G': 6, 'H': 2},
+    'E': {'B': 1, 'F': 5, 'I': 3},
+    'F': {'A': 3, 'E': 5, 'G': 2},
+    'G': {'D': 6, 'F': 2, 'H': 7},
+    'H': {'D': 2, 'G': 7, 'I': 4},
+    'I': {'E': 3, 'H': 4, 'J': 6},
+    'J': {'C': 4, 'I': 6}
+}
 g_30 = {
     'A1':  {'A2': 4, 'A5': 7},
     'A2':  {'A1': 4, 'A3': 2, 'A6': 5},
@@ -137,7 +153,6 @@ g_30 = {
     'A29': {'A28': 4, 'A30': 6},
     'A30': {'A29': 6}
 }
-
 g_50 = {
     'N01': {'N02': 3, 'N05': 7},
     'N02': {'N01': 3, 'N03': 4, 'N06': 6},
@@ -190,15 +205,18 @@ g_50 = {
     'N49': {'N48': 3, 'N50': 6},
     'N50': {'N49': 6}
 }
-
 g = {
-'A': {'B': 4, 'C': 2},
-'B': {'A': 4, 'C': 5, 'D': 10},
+'A': {'B': 4, 'C': 2, 'F': 3},
+'B': {'A': 4, 'C': 5, 'D': 10, 'E': 1},
 'C': {'A': 2, 'B': 5, 'D': 3},
-'D': {'B': 10, 'C': 3}
+'D': {'B': 10, 'C': 3, 'G': 6},
+'E': {'B': 1, 'F': 5},
+'F': {'A': 3, 'E': 5, 'G': 2},
+'G': {'D': 6, 'F': 2},
 }
-print(prim_algorithm(g_30))
+
+# print(prim_algorithm(g_30))
 # print(kruskal_algorithm(g))
 # print(kruskal_algorithm(graph_50))
-# print(kruskal_algorithm(g_50))
+print(kruskal_algorithm(g_10))
 # print(transform_graph(g_50))
