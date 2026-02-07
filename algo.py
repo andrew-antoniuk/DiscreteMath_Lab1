@@ -1,31 +1,40 @@
 """
-Docstring for algo
+Algorithms & Testing Field
 """
 
 def kruskal_algorithm(graph: dict[str, dict[str, int]]) -> dict[str, dict[str, int]]:
 
     """
-    Docstring for kruskal_algorithm
+    Kruskal's Algorithm for finding minimum spanning tree of given weighted graph.
+    The main concept of this algorithm is to choose edge with the least possible weight
+    at each step in the whole graph, so that no cycle can be formed,
+    and repeat thos process until no unvisited nodes left.
+
+    In this functional implementation
+    we first transform the graph into more practial form of data,
+    which follows this structure:
+    [('A', 'B', d), ...], where 'A' and 'B' are nodes and 'd' is numerical distance
+
+    Then we start iterance over brand new sorted data and fill 'tree' placeholder with values,
+    when we meet the belong condition
+
+    Works only for similar graph representation below:
 
     g = {
-    'A': {'B': 4, 'C': 2, 'F': 3},
-    'B': {'A': 4, 'C': 5, 'D': 10, 'E': 1},
-    'C': {'A': 2, 'B': 5, 'D': 3},
-    'D': {'B': 10, 'C': 3, 'G': 6},
-    'E': {'B': 1, 'F': 5},
-    'F': {'A': 3, 'E': 5, 'G': 2},
-    'G': {'D': 6, 'F': 2},
+    'A': {'B': 4, 'C': 2, 'D': 3},
+    'B': {'A': 4},
+    'C': {'A': 2, 'D': 2},
+    'D': {'A': 3, 'C': 2, 'D': 3},
     }
 
-    :param graph: Description
+    :param graph: Given graph to get MST
     :type graph: dict[str, dict[str, int]]
-    :return: Description
-    :rtype: dict[str, dict[str, int]]
+    :return dict[str, dict[str, int]]: Minimum spanning tree of the graph
     """
 
     edges = []
     visited = set()
-    for u in graph: # transform edges into ('A', 'B', d)
+    for u in graph: # transform graph into [('A', 'B', d), ...]
         for v, w in graph[u].items():
             if (v, u) not in visited:
                 edges.append((u, v, w))
@@ -51,43 +60,29 @@ def kruskal_algorithm(graph: dict[str, dict[str, int]]) -> dict[str, dict[str, i
 
     return tree
 
-    # edges = []
-    # visited = set()
-
-    # for u, sub in graph.items():
-    #     for v, w in sub.items():
-    #         if (v, u) not in visited:
-    #             edges.append((u, v, w))
-    #             visited.add((u, v))
-
-    # x = sorted(edges, key = lambda x: x[2])
-    # lenght = len(graph)
-    # visited = set()
-    # tree = {v: {} for v in graph}
-
-    # while len(visited) < lenght:
-
-    #     v, u, w = next(iter(x))
-    #     if not {v, u} <= visited:
-    #         visited.update({v, u})
-    #         tree[v][u] = w
-    #         tree[u][v] = w
-    #     x.remove((v, u, w))
-
-    # return tree
-
-
 
 def prim_algorithm(graph: dict[str, dict[str, int]], start = None) -> dict[str, dict[str, int]]:
 
     """
-    Docstring for prim_algorithm
+    Prim's Algorithm for finding minimum spanning tree of given weighted graph.
+    The main concept of this algorithm is to start from any node you want
+    and choose edge with the least possible weight
+    at each step from neighboring nodes, so that no cycle can be formed,
+    and repeat thos process until no unvisited nodes left.
 
-    :param graph: Description
-    :type graph: dict[str, dict[str, int]]
-    :param start: Description
-    :return: Description
-    :rtype: dict[str, dict[str, int]]
+    In this functional implementation
+    we first choose the starting point
+    then we look at neighboring nodes and choose the least weighted one to go there,
+    so that no cycle can be formed or visited nodes can be visited.
+
+    Works only for similar graph representation below:
+
+    g = {
+    'A': {'B': 4, 'C': 2, 'D': 3},
+    'B': {'A': 4},
+    'C': {'A': 2, 'D': 2},
+    'D': {'A': 3, 'C': 2, 'D': 3},
+    }
     """
 
     if start is None: # in case of no user-input
@@ -108,6 +103,7 @@ def prim_algorithm(graph: dict[str, dict[str, int]], start = None) -> dict[str, 
         visited.add(v)
 
     return tree
+
 
 g_10 = {
     'A': {'B': 4, 'C': 2, 'F': 3},
@@ -215,8 +211,9 @@ g = {
 'G': {'D': 6, 'F': 2},
 }
 
+
 # print(prim_algorithm(g_30))
 # print(kruskal_algorithm(g))
 # print(kruskal_algorithm(graph_50))
-print(kruskal_algorithm(g_10))
+# print(kruskal_algorithm(g_10))
 # print(transform_graph(g_50))
