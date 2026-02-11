@@ -12,13 +12,15 @@ def nx_to_adj_dict(G):
     :param G: Description
     """
 
-    adj = {}
-    for u in G.nodes():
-        adj[u] = {}
-    for u, v, w in G.edges(data="weight"):
-        adj[u][v] = w
-        adj[v][u] = w
-    return adj
+    g = {node: {} for node in G.nodes()}
+
+    for u, v, data in G.edges(data=True):
+        w = data.get("weight", 1)
+
+        g[u][v] = w
+        g[v][u] = w  # since MST requires undirected graph
+
+    return g
 
 def kruskal_algorithm(graph: dict[str, dict[str, int]]) -> dict[str, dict[str, int]]:
 

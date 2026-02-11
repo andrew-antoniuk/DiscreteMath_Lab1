@@ -33,8 +33,8 @@ def floyd_warshall(graph):
     n = len(graph)
     dist = [row[:] for row in graph]
 
-    print("Початкова матриця:")
-    print_matrix(dist, 0)
+    # print("Початкова матриця:")
+    # print_matrix(dist, 0)
 
     for k in range(n):
         for i in range(n):
@@ -42,18 +42,18 @@ def floyd_warshall(graph):
                 if dist[i][k] + dist[k][j] < dist[i][j]:
                     dist[i][j] = dist[i][k] + dist[k][j]
 
-        print_matrix(dist, k + 1)
+        # print_matrix(dist, k + 1)
 
     return dist
 
-graph = [
+g = [
     [0,    5,    INF, 10],
     [INF,  0,    3,   INF],
     [INF,  INF,  0,   1],
     [INF,  INF,  INF, 0]
 ]
 
-floyd_warshall(graph)
+floyd_warshall(g)
 
 INF = float("inf")
 
